@@ -30,6 +30,15 @@ while True:
         if event.type == pygame.QUIT:
             sys.exit()
 
+    # Destroy balls which escape the bottom:
+    balls = [ball for ball in balls
+             if ball.position[1] < height - ball.radius]
+
+    # If there are no balls left, we lost!
+    if len(balls) == 0:
+        print("You lose!")
+        sys.exit(0)
+
     # Move the paddle
     paddle.move(pygame.mouse.get_pos())
 

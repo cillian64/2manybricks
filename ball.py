@@ -28,9 +28,15 @@ class Ball:
         surface.blit(self.sprite, (self.position[0] - self.radius,
                                    self.position[1] - self.radius))
 
-    def move(self):
-        self.position[0] += int(self.speed * cos(self.bearing))
-        self.position[1] += int(self.speed * sin(self.bearing))
+    def move(self, dt):
+        """
+        dt is the time which has passed, in milliseconds, since the last time
+        ball.move was called.  This means even if your computer chugs at a low
+        fps the ball should still move at the same speed
+        """
+        speed_adj = self.speed * dt / (1000.0 / 50)
+        self.position[0] += int(speed_adj * cos(self.bearing))
+        self.position[1] += int(speed_adj * sin(self.bearing))
 
     def condition_bearing(self):
         """

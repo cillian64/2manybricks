@@ -8,13 +8,14 @@ from paddle import Paddle
 from levels import load_level, NoMoreLevels
 
 
-def play_level(level, width, height, sounds):
+def play_level(level, width, height, sounds, fps):
     screen_rect = pygame.Rect(0, 0, width, height)
     balls = []
     balls.append(Ball([0, 0], pi/2, 10, 15, (255, 0, 0)))
     bricks = load_level(level, width, height)
     paddle = Paddle(pygame.Rect(100, height-50, 150, 15), width,
                     (255, 255, 255))
+    tick = pygame.time.get_ticks()
 
     sticky_paddle = True
     while True:
@@ -22,6 +23,13 @@ def play_level(level, width, height, sounds):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
+
+        # Limit the loop speed to `fps` frames per second
+        next_tick = int(tick + 1000/fps)
+        if pygame.time.get_ticks() < next_tick:
+            pygame.time.wait(next_tick - pygame.time.get_ticks())
+        dt = pygame.time.get_ticks() - tick  # Time elapsed in millis
+        tick = pygame.time.get_ticks()
 
         # Destroy balls which escape the bottom:
         balls = [ball for ball in balls
@@ -46,7 +54,7 @@ def play_level(level, width, height, sounds):
             balls[0].position[1] = (paddle.y - int(paddle.height/2) -
                                     balls[0].radius - 1)
             balls[0].speed = 0
-            balls[0].bearing = pi/2
+            balls[0].bearing = -pi/2
             if pygame.mouse.get_pressed()[0]:
                 balls[0].speed = 10
                 sticky_paddle = False
@@ -60,7 +68,7 @@ def play_level(level, width, height, sounds):
                     sounds['brick'].play()
             if paddle.collide(ball):
                 sounds['paddle'].play()
-            ball.move()
+            ball.move(dt)
 
         # Remove dead bricks
         bricks = [brick for brick in bricks if brick.alive()]
@@ -77,6 +85,7 @@ def play_level(level, width, height, sounds):
 
 
 size = width, height = 1024, 768
+fps = 60  # Frames per second
 pygame.mixer.pre_init()
 pygame.init()
 screen = pygame.display.set_mode(size)
@@ -90,7 +99,7 @@ else:
     level = 0
 while True:
     try:
-        play_level(level, width, height, sounds)
+        play_level(level, width, height, sounds, fps)
     except NoMoreLevels:
         print("You win!")
         sys.exit(0)

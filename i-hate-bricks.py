@@ -7,7 +7,7 @@ from paddle import Paddle
 from levels import load_level, NoMoreLevels
 
 
-def play_level(level, width, height):
+def play_level(level, width, height, sounds):
     screen_rect = pygame.Rect(0, 0, width, height)
     balls = []
     balls.append(Ball([0, 0], pi/2, 10, 15, (255, 0, 0)))
@@ -55,7 +55,9 @@ def play_level(level, width, height):
             for brick in bricks:
                 if ball.collide_rect_external(brick.rect):
                     brick.hit()
-            paddle.collide(ball)
+                    sounds['brick'].play()
+            if paddle.collide(ball):
+                sounds['paddle'].play()
             ball.move()
 
         # Remove dead bricks
@@ -73,14 +75,20 @@ def play_level(level, width, height):
 
 
 size = width, height = 1024, 768
+pygame.mixer.pre_init()
+pygame.init()
 screen = pygame.display.set_mode(size)
+sounds = {
+    'paddle': pygame.mixer.Sound('zap1.wav'),
+    'brick': pygame.mixer.Sound('click1.wav'),
+}
 if len(sys.argv) == 2:
     level = int(sys.argv[1])
 else:
     level = 0
 while True:
     try:
-        play_level(level, width, height)
+        play_level(level, width, height, sounds)
     except NoMoreLevels:
         print("You win!")
         sys.exit(0)

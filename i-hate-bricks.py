@@ -2,16 +2,16 @@ import sys
 import pygame
 
 from ball import Ball
-from brick import Brick
 from paddle import Paddle
+from levels import load_level
 
 size = width, height = 1024, 768
 screen_rect = pygame.Rect(0, 0, width, height)
 screen = pygame.display.set_mode(size)
-ball_defaults = {'position': [50, 50],
+ball_defaults = {'position': [int(width/2), height-50],
                  'bearing': -0.7,
                  'speed': 10,
-                 'radius': 50,
+                 'radius': 15,
                  'colour': (255, 0, 0)
                  }
 background = (0, 0, 0)
@@ -19,8 +19,7 @@ background = (0, 0, 0)
 balls = []
 balls.append(Ball(**ball_defaults))
 
-bricks = []
-bricks.append(Brick(pygame.Rect(300, 300, 300, 300), (255, 255, 255), 1))
+bricks = load_level(0, width, height)
 
 paddle = Paddle(pygame.Rect(100, height-50, 150, 15), width, (255, 255, 255))
 

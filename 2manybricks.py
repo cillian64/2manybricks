@@ -15,7 +15,7 @@ def play_level(level, width, height, sounds, fps):
     bricks = load_level(level, width, height)
     paddle = Paddle(pygame.Rect(100, height-50, 150, 15), width,
                     (255, 255, 255))
-    tick = pygame.time.get_ticks()
+    clock = pygame.time.Clock()
 
     sticky_paddle = True
     while True:
@@ -25,11 +25,9 @@ def play_level(level, width, height, sounds, fps):
                 sys.exit()
 
         # Limit the loop speed to `fps` frames per second
-        next_tick = int(tick + 1000/fps)
-        if pygame.time.get_ticks() < next_tick:
-            pygame.time.wait(next_tick - pygame.time.get_ticks())
-        dt = pygame.time.get_ticks() - tick  # Time elapsed in millis
-        tick = pygame.time.get_ticks()
+        clock.tick_busy_loop(fps)
+        actual_fps = clock.get_fps()
+        dt = (1000.0 / actual_fps) if actual_fps > 0 else 0
 
         # Destroy balls which escape the bottom:
         balls = [ball for ball in balls

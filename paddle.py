@@ -42,6 +42,6 @@ class Paddle:
                 and ball.position[0] < self.x + self.width/2 + ball.radius
                 and ball.position[1] > self.y - self.height/2 - ball.radius
                 and ball.position[1] < self.y + self.height/2):
-            siding = (self.x - ball.position[0]) / self.width
+            siding = (self.x - ball.position[0]) / self.width * 1.5
             ball.bearing = -pi/2 - pi/2 * siding
             ball.position[1] = self.y - int(self.height/2) - ball.radius - 1

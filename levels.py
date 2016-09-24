@@ -19,10 +19,10 @@ def load_level(level, width, height):
             os.path.join("levels", "level_{}.png".format(level)))
     except pygame.error:
         raise NoMoreLevels()
-    pixels = pygame.PixelArray(im_surf)
-    if pixels.shape != (10, 5):
+    if im_surf.get_size() != (10, 5):
         raise RuntimeError("Level files must be 10 pixels wide by 5 pixels "
-                           "high.  This one is {}".format(pixels.shape))
+                           "high.  This one is {}".format(im_surf.get_size()))
+    pixels = pygame.PixelArray(im_surf)
     grid_width = int(width / 10)
     grid_height = int(height / 10)
     bricks = []

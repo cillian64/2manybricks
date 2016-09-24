@@ -1,4 +1,5 @@
 import pygame
+import os
 
 
 class Brick:
@@ -18,11 +19,12 @@ class Brick:
         self.sprites = dict()
         if life == -1:
             self.sprites[-1] = pygame.image.load(
-                "brick_{}.png".format(colourcode))
+                os.path.join("images", "brick_{}.png".format(colourcode)))
         else:
             for l in range(life, 0, -1):
                 self.sprites[l] = pygame.image.load(
-                    "brick_{}_{}.png".format(colourcode, l))
+                    os.path.join("images", "brick_{}_{}.png".format(
+                        colourcode, l)))
         for sprite in self.sprites.values():
             if sprite.get_size() != (rect.width, rect.height):
                 raise RuntimeError("Brick is wrong size.  Expected {}"

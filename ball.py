@@ -1,5 +1,6 @@
 import pygame
 from math import sin, cos, pi
+import os
 
 
 class Ball:
@@ -16,7 +17,8 @@ class Ball:
         self.speed = speed
         self.radius = radius
         self.colour = colour
-        self.sprite = pygame.image.load("ball_{}.png".format(radius))
+        self.sprite = pygame.image.load(
+            os.path.join("images", "ball_{}.png".format(radius)))
         if self.sprite.get_size() != (2*radius, 2*radius):
             raise RuntimeError("Ball sprite is the wrong size.")
 

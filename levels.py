@@ -1,4 +1,5 @@
 import pygame
+import os
 
 from brick import Brick
 
@@ -14,7 +15,8 @@ def load_level(level, width, height):
     leaving the top 20% and the bottom 30% empty
     """
     try:
-        im_surf = pygame.image.load("level_{}.png".format(level))
+        im_surf = pygame.image.load(
+            os.path.join("levels", "level_{}.png".format(level)))
     except pygame.error:
         raise NoMoreLevels()
     pixels = pygame.PixelArray(im_surf)

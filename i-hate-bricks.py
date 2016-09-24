@@ -1,5 +1,6 @@
 import sys
 from math import pi
+import os
 import pygame
 
 from ball import Ball
@@ -80,8 +81,8 @@ pygame.mixer.pre_init()
 pygame.init()
 screen = pygame.display.set_mode(size)
 sounds = {
-    'paddle': pygame.mixer.Sound('zap1.wav'),
-    'brick': pygame.mixer.Sound('click1.wav'),
+    'paddle': pygame.mixer.Sound(os.path.join('sounds', 'zap1.wav')),
+    'brick': pygame.mixer.Sound(os.path.join('sounds', 'click1.wav')),
 }
 if len(sys.argv) == 2:
     level = int(sys.argv[1])

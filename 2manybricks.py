@@ -8,7 +8,7 @@ from paddle import Paddle
 from levels import load_level, NoMoreLevels
 
 
-def play_level(level, width, height, sounds, fps):
+def play_level(level, width, height, sounds, fps, score):
     screen_rect = pygame.Rect(0, 0, width, height)
     balls = []
     balls.append(Ball([0, 0], pi/2, 10, 15, (255, 0, 0)))
@@ -16,6 +16,7 @@ def play_level(level, width, height, sounds, fps):
     paddle = Paddle(pygame.Rect(100, height-50, 150, 15), width,
                     (255, 255, 255))
     clock = pygame.time.Clock()
+    font = pygame.font.Font(None, 36)
 
     sticky_paddle = True
     while True:
@@ -29,20 +30,24 @@ def play_level(level, width, height, sounds, fps):
         actual_fps = clock.get_fps()
         dt = (1000.0 / actual_fps) if actual_fps > 0 else 0
 
-        # Destroy balls which escape the bottom:
-        balls = [ball for ball in balls
-                 if ball.position[1] < height - ball.radius]
-
-        # If there are no balls left, we lost!
-        if len(balls) == 0:
-            print("You lose!")
-            sys.exit(0)
+        # If we have more than one ball, destroy any that reach the bottom
+        if len(balls) > 1:
+            balls = [ball for ball in balls
+                     if ball.position[1] < height - ball.radius]
+        elif len(balls) == 1:
+            if balls[0].position[1] > height - balls[0].radius:
+                # If we only have one ball left and it reaches the bottom,
+                # reset our score and sticky the ball/paddle
+                sticky_paddle = True
+                score = 0
+        else:
+            raise RuntimeError("Ran out of balls...")
 
         # If there are no bricks left (except immortal bricks), you cleared
         # this level
         if len([brick for brick in bricks if brick.life > 0]) == 0:
             print("Level {} cleared.".format(level))
-            return
+            return score
 
         # Move the paddle
         paddle.move(pygame.mouse.get_pos())
@@ -64,6 +69,8 @@ def play_level(level, width, height, sounds, fps):
                 if ball.collide_rect_external(brick.rect):
                     brick.hit()
                     sounds['brick'].play()
+                    if brick.life != -1:
+                        score += 1
             if paddle.collide(ball):
                 sounds['paddle'].play()
             ball.move(dt)
@@ -78,6 +85,8 @@ def play_level(level, width, height, sounds, fps):
         for ball in balls:
             ball.draw(screen)
         paddle.draw(screen)
+        score_surf = font.render(str(score), 1, (255, 255, 255))
+        screen.blit(score_surf, (10, 10))
 
         pygame.display.flip()
 
@@ -101,10 +110,12 @@ if len(sys.argv) == 2:
     level = int(sys.argv[1])
 else:
     level = 0
+score = 0
 while True:
     try:
-        play_level(level, width, height, sounds, fps)
+        score = play_level(level, width, height, sounds, fps, score)
     except NoMoreLevels:
         print("You win!")
+        print("Score: {}".format(score))
         sys.exit(0)
     level += 1

@@ -3,13 +3,20 @@ import pygame
 from brick import Brick
 
 
+class NoMoreLevels(Exception):
+    pass
+
+
 def load_level(n, width, height):
     """
     Load the level number n from the file level_n.png
     The pixels form a 5 row 10 column grid covering 50% of the screen
     leaving the top 20% and the bottom 30% empty
     """
-    im_surf = pygame.image.load("level_{}.png".format(n))
+    try:
+        im_surf = pygame.image.load("level_{}.png".format(n))
+    except pygame.error:
+        raise NoMoreLevels()
     pixels = pygame.PixelArray(im_surf)
     if pixels.shape != (10, 5):
         raise RuntimeError("Level files must be 10 pixels wide by 5 pixels "

@@ -91,6 +91,12 @@ sounds = {
     'paddle': pygame.mixer.Sound(os.path.join('sounds', 'zap1.wav')),
     'brick': pygame.mixer.Sound(os.path.join('sounds', 'click1.wav')),
 }
+try:
+    pygame.mixer.music.load(os.path.join('sounds', '2manycooks.ogg'))
+    pygame.mixer.music.play(loops=-1)
+except Exception as e:
+    print("Music file not found or libvorbis not installed.")
+
 if len(sys.argv) == 2:
     level = int(sys.argv[1])
 else:

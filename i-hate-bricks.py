@@ -74,7 +74,10 @@ def play_level(level, width, height):
 
 size = width, height = 1024, 768
 screen = pygame.display.set_mode(size)
-level = 0
+if len(sys.argv) == 2:
+    level = int(sys.argv[1])
+else:
+    level = 0
 while True:
     try:
         play_level(level, width, height)

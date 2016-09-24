@@ -31,8 +31,9 @@ def play_level(level, width, height, sounds):
             print("You lose!")
             sys.exit(0)
 
-        # If there are no bricks left, you cleared this level
-        if len(bricks) == 0:
+        # If there are no bricks left (except immortal bricks), you cleared
+        # this level
+        if len([brick for brick in bricks if brick.life > 0]) == 0:
             print("Level {} cleared.".format(level))
             return
 

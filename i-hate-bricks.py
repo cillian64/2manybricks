@@ -15,6 +15,7 @@ def play_level(level, width, height):
     paddle = Paddle(pygame.Rect(100, height-50, 150, 15), width,
                     (255, 255, 255))
 
+    sticky_paddle = True
     while True:
         # Handle events
         for event in pygame.event.get():
@@ -38,14 +39,24 @@ def play_level(level, width, height):
         # Move the paddle
         paddle.move(pygame.mouse.get_pos())
 
+        if sticky_paddle:
+            balls[0].position[0] = paddle.x
+            balls[0].position[1] = (paddle.y - int(paddle.height/2) -
+                                    balls[0].radius - 1)
+            balls[0].speed = 0
+            balls[0].bearing = pi/2
+            if pygame.mouse.get_pressed()[0]:
+                balls[0].speed = 10
+                sticky_paddle = False
+
         # Handle all the ball movement and collision
         for ball in balls:
-            balls[0].collide_rect_internal(screen_rect)
+            ball.collide_rect_internal(screen_rect)
             for brick in bricks:
                 if ball.collide_rect_external(brick.rect):
                     brick.hit()
             paddle.collide(ball)
-            balls[0].move()
+            ball.move()
 
         # Remove dead bricks
         bricks = [brick for brick in bricks if brick.alive()]

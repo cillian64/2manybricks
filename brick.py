@@ -10,10 +10,26 @@ class Brick:
         """
         self.rect = rect
         self.colour = colour
+        if life == 0:
+            raise RuntimeError("Cannot have a brick start with life 0")
         self.life = life
+        colourcode = "{:02x}{:02x}{:02x}".format(colour[0], colour[1],
+                                                 colour[2])
+        self.sprites = dict()
+        if life == -1:
+            self.sprites[-1] = pygame.image.load(
+                "brick_{}.png".format(colourcode))
+        else:
+            for l in range(life, 0, -1):
+                self.sprites[l] = pygame.image.load(
+                    "brick_{}_{}.png".format(colourcode, l))
+        for sprite in self.sprites.values():
+            if sprite.get_size() != (rect.width, rect.height):
+                raise RuntimeError("Brick is wrong size.  Expected {}"
+                                   "".format((rect.width, rect.height)))
 
     def draw(self, surface):
-        pygame.draw.rect(surface, self.colour, self.rect)
+        surface.blit(self.sprites[self.life], (self.rect.left, self.rect.top))
 
     def hit(self):
         if self.life > 0:

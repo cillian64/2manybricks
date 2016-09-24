@@ -16,9 +16,15 @@ class Ball:
         self.speed = speed
         self.radius = radius
         self.colour = colour
+        self.sprite = pygame.image.load("ball_{}.png".format(radius))
+        if self.sprite.get_size() != (2*radius, 2*radius):
+            raise RuntimeError("Ball sprite is the wrong size.")
 
     def draw(self, surface):
-        pygame.draw.circle(surface, self.colour, self.position, self.radius)
+        # Blit's position argument is the top-left of the sprite
+        # whereas self.position is the centre.
+        surface.blit(self.sprite, (self.position[0] - self.radius,
+                                   self.position[1] - self.radius))
 
     def move(self):
         self.position[0] += int(self.speed * cos(self.bearing))

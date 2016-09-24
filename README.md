@@ -1,5 +1,5 @@
-# i-hate-bricks
-A simple breakout clone, written in under 400 lines of Python using pygame.
+# 2manybricks
+A simple breakout clone, written in under 500 lines of Python using pygame.
 
 ![Screenshot 1](screenshots/1.png)
 

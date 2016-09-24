@@ -25,7 +25,7 @@ def play_level(level, width, height, sounds, fps):
                 sys.exit()
 
         # Limit the loop speed to `fps` frames per second
-        clock.tick_busy_loop(fps)
+        clock.tick(fps)
         actual_fps = clock.get_fps()
         dt = (1000.0 / actual_fps) if actual_fps > 0 else 0
 

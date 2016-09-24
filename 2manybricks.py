@@ -16,7 +16,8 @@ def play_level(level, width, height, sounds, fps, score):
     paddle = Paddle(pygame.Rect(100, height-50, 150, 15), width,
                     (255, 255, 255))
     clock = pygame.time.Clock()
-    font = pygame.font.Font(None, 36)
+    font = pygame.font.Font(None, 48)
+    spare_balls = 3
 
     sticky_paddle = True
     while True:
@@ -36,12 +37,17 @@ def play_level(level, width, height, sounds, fps, score):
                      if ball.position[1] < height - ball.radius]
         elif len(balls) == 1:
             if balls[0].position[1] > height - balls[0].radius:
-                # If we only have one ball left and it reaches the bottom,
-                # reset our score and sticky the ball/paddle
+                # If we only have one ball left and it reaches the bottom:
+                # If we have spare balls, use one
+                if spare_balls > 0:
+                    spare_balls -= 1
+                else:
+                    # Otherwise, we lose :(
+                    print("You lose!  Score: {}".format(score))
+                    sys.exit(0)
                 sticky_paddle = True
-                score = 0
         else:
-            raise RuntimeError("Ran out of balls...")
+            raise RuntimeError("Ran out of balls...?")
 
         # If there are no bricks left (except immortal bricks), you cleared
         # this level
@@ -86,7 +92,9 @@ def play_level(level, width, height, sounds, fps, score):
             ball.draw(screen)
         paddle.draw(screen)
         score_surf = font.render(str(score), 1, (255, 255, 255))
-        screen.blit(score_surf, (10, 10))
+        screen.blit(score_surf, (20, 20))
+        for idx in range(spare_balls):
+            balls[0].draw(screen, (width - 50 - 40*idx, 20))
 
         pygame.display.flip()
 

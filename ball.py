@@ -22,11 +22,14 @@ class Ball:
         if self.sprite.get_size() != (2*radius, 2*radius):
             raise RuntimeError("Ball sprite is the wrong size.")
 
-    def draw(self, surface):
+    def draw(self, surface, pos=None):
         # Blit's position argument is the top-left of the sprite
         # whereas self.position is the centre.
-        surface.blit(self.sprite, (self.position[0] - self.radius,
-                                   self.position[1] - self.radius))
+        if pos is None:
+            surface.blit(self.sprite, (self.position[0] - self.radius,
+                                       self.position[1] - self.radius))
+        else:
+            surface.blit(self.sprite, pos)
 
     def move(self, dt):
         """

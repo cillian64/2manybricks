@@ -69,7 +69,7 @@ def play_level(level, width, height, sounds, fps, score):
         for ball in balls:
             ball.collide_rect_internal(screen_rect)
             for brick in bricks:
-                if ball.collide_rect_external(brick.rect):
+                if ball.collide_rect_external(brick.rect, invert=brick.invert):
                     brick.hit()
                     sounds['brick'].play()
                     if brick.life != -1:

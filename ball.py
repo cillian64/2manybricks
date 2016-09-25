@@ -78,10 +78,11 @@ class Ball:
         self.condition_bearing()
         return bounce
 
-    def collide_rect_external(self, rect):
+    def collide_rect_external(self, rect, invert=False):
         """
         rect is a pygame Rect.
         Use this method when we are bouncing against the outside of a rectangle
+        if invert is true, we mirror the bouncing for extra hilarity.
         Returns true if a bounce occurred, else False
         """
         bounce = False
@@ -111,13 +112,19 @@ class Ball:
             if (rect.top - self.position[1] < self.radius
                     and rect.top - self.position[1] > 0):
                 # Bounce top edge
-                self.bearing *= -1
+                if invert:
+                    self.bearing += pi
+                else:
+                    self.bearing *= -1
                 self.position[1] = rect.top - self.radius
                 bounce = True
             elif (self.position[1] - rect.bottom < self.radius
                     and self.position[1] - rect.bottom > 0):
                 # Bounce bottom edge
-                self.bearing *= -1
+                if invert:
+                    self.bearing += pi
+                else:
+                    self.bearing *= -1
                 self.position[1] = rect.bottom + self.radius
                 bounce = True
 
@@ -127,13 +134,19 @@ class Ball:
             if (rect.left - self.position[0] < self.radius
                     and rect.left - self.position[0] > 0):
                 # Bounce left edge
-                self.bearing = self.bearing * -1 + pi
+                if invert:
+                    self.bearing += pi
+                else:
+                    self.bearing = self.bearing * -1 + pi
                 self.position[0] = rect.left - self.radius
                 bounce = True
             elif (self.position[0] - rect.right < self.radius
                     and self.position[0] - rect.left > 0):
                 # Bounce right edge
-                self.bearing = self.bearing * -1 + pi
+                if invert:
+                    self.bearing += pi
+                else:
+                    self.bearing = self.bearing * -1 + pi
                 self.position[0] = rect.right + self.radius
                 bounce = True
         self.condition_bearing()

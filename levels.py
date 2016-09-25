@@ -51,6 +51,11 @@ def load_level(level, width, height):
                 bricks.append(Brick(pygame.Rect(left, top, grid_width,
                                                 grid_height),
                                     colour, 1, multiball=True))
+            elif colour == (255, 0, 255):
+                # Pink pixel: brick with 1 life inverted ball bouncing
+                bricks.append(Brick(pygame.Rect(left, top, grid_width,
+                                                grid_height),
+                                    colour, 1, invert=True))
             elif colour == (100, 100, 100):
                 # Grey pixel: indestructible brick
                 bricks.append(Brick(pygame.Rect(left, top, grid_width,

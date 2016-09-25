@@ -4,19 +4,17 @@ import os
 
 
 class Ball:
-    def __init__(self, position, bearing, speed, radius, colour):
+    def __init__(self, position, bearing, speed, radius):
         """
         Position is a *LIST* of [x, y] in pixels.  So I can mutate them.
         Bearing is in radians anticlockwise from right ->
         Speed is in pixels per tick
         Radius is in pixels
-        Colour is a tuple of (red, green, blue) integers 0-255
         """
         self.position = position
         self.bearing = bearing
         self.speed = speed
         self.radius = radius
-        self.colour = colour
         self.sprite = pygame.image.load(
             os.path.join("images", "ball_{}.png".format(radius)))
         if self.sprite.get_size() != (2*radius, 2*radius):

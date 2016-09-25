@@ -11,7 +11,7 @@ from levels import load_level, NoMoreLevels
 def play_level(level, width, height, sounds, fps, score):
     screen_rect = pygame.Rect(0, 0, width, height)
     balls = []
-    balls.append(Ball([0, 0], pi/2, 10, 15, (255, 0, 0)))
+    balls.append(Ball([0, 0], pi/2, 10, 15))
     bricks = load_level(level, width, height)
     paddle = Paddle(pygame.Rect(100, height-50, 150, 15), width,
                     (255, 255, 255))
@@ -31,23 +31,20 @@ def play_level(level, width, height, sounds, fps, score):
         actual_fps = clock.get_fps()
         dt = (1000.0 / actual_fps) if actual_fps > 0 else 0
 
-        # If we have more than one ball, destroy any that reach the bottom
-        if len(balls) > 1:
-            balls = [ball for ball in balls
-                     if ball.position[1] < height - ball.radius]
-        elif len(balls) == 1:
-            if balls[0].position[1] > height - balls[0].radius:
-                # If we only have one ball left and it reaches the bottom:
-                # If we have spare balls, use one
+        # Destroy any balls that reach the bottom
+        balls = [ball for ball in balls
+                 if ball.position[1] < height - ball.radius]
+
+        if len(balls) == 0:
+                # If we have spare balls, use one and create a new ball
                 if spare_balls > 0:
                     spare_balls -= 1
+                    sticky_paddle = True
+                    balls.append(Ball([0, 0], pi/2, 10, 15))
                 else:
                     # Otherwise, we lose :(
                     print("You lose!  Score: {}".format(score))
                     sys.exit(0)
-                sticky_paddle = True
-        else:
-            raise RuntimeError("Ran out of balls...?")
 
         # If there are no bricks left (except immortal bricks), you cleared
         # this level
@@ -80,6 +77,14 @@ def play_level(level, width, height, sounds, fps, score):
             if paddle.collide(ball):
                 sounds['paddle'].play()
             ball.move(dt)
+
+        # Handle multiballs:
+        for brick in bricks:
+            if brick.multiball and brick.life == 0:
+                # Multiball release!
+                x = brick.rect.left + int(brick.rect.width / 2)
+                y = brick.rect.top + int(brick.rect.height / 2)
+                balls.append(Ball([x, y], 1.0, 10, 15))
 
         # Remove dead bricks
         bricks = [brick for brick in bricks if brick.alive()]

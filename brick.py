@@ -3,12 +3,13 @@ import os
 
 
 class Brick:
-    def __init__(self, rect, colour, life):
+    def __init__(self, rect, colour, life, multiball=False):
         """
         rect is a pygame rect describing my position and size.
         colour is a tuple of (red, green, blue)
         life is my number of life-points!
         """
+        self.multiball = multiball
         self.rect = rect
         self.colour = colour
         if life == 0:

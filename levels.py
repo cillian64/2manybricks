@@ -32,17 +32,27 @@ def load_level(level, width, height):
             top = (y + 2) * grid_height
             colour = im_surf.unmap_rgb(pixels[x, y])[:3]  # Strip alpha
             if colour == (0, 0, 0):
+                # Black pixel: no brick
                 continue
             elif colour == (255, 0, 0):
+                # Red pixel: brick with 1 life
                 bricks.append(Brick(pygame.Rect(left, top, grid_width,
                                                 grid_height), colour, 1))
             elif colour == (255, 255, 0):
+                # Yellow pixel: brick with 2 life
                 bricks.append(Brick(pygame.Rect(left, top, grid_width,
                                                 grid_height), colour, 2))
             elif colour == (0, 255, 0):
+                # Green pixel: brick with 3 life
                 bricks.append(Brick(pygame.Rect(left, top, grid_width,
                                                 grid_height), colour, 3))
+            elif colour == (0, 0, 255):
+                # Blue pixel: brick with 1 life and multi-ball release!
+                bricks.append(Brick(pygame.Rect(left, top, grid_width,
+                                                grid_height),
+                                    colour, 1, multiball=True))
             elif colour == (100, 100, 100):
+                # Grey pixel: indestructible brick
                 bricks.append(Brick(pygame.Rect(left, top, grid_width,
                                                 grid_height), colour, -1))
             else:
